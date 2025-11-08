@@ -72,8 +72,8 @@ function App() {
   return (
     <div className="container">
       <header className="app-header">
-        <h1>📝 Task Manager <span style={{fontSize: '0.6em', opacity: 0.8}}>v2.0</span></h1>
-        <p>Manage your DevOps tasks efficiently - CI/CD Pipeline Test ✅</p>
+        <h1>📝 Task Manager <span style={{fontSize: '0.6em', opacity: 0.8}}>v2.1</span></h1>
+        <p>Manage your DevOps tasks efficiently - CI/CD Pipeline Test 🚀</p>
       </header>
       
       {error && (
