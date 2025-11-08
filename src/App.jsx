@@ -72,8 +72,8 @@ function App() {
   return (
     <div className="container">
       <header className="app-header">
-        <h1>📝 Task Manager</h1>
-        <p>Manage your DevOps tasks efficiently</p>
+        <h1>📝 Task Manager <span style={{fontSize: '0.6em', opacity: 0.8}}>v2.0</span></h1>
+        <p>Manage your DevOps tasks efficiently - CI/CD Pipeline Test ✅</p>
       </header>
       
       {error && (
@@ -87,6 +87,9 @@ function App() {
       
       <footer className="app-footer">
         <p>📊 Total tasks: {tasks.length} | ✅ Completed: {tasks.filter(t => t.status === "Completed").length}</p>
+        <p style={{fontSize: '0.8em', marginTop: '5px', color: '#28a745'}}>
+          🚀 Deployed via GitHub Actions CI/CD Pipeline - Build #{new Date().toISOString().slice(0,10)}
+        </p>
       </footer>
     </div>
   );
