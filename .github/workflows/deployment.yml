@@ -1,0 +1,56 @@
+name: 🧩 Phase 2: Deploy React Frontend to GCP VM
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.js'
+      - '**.jsx' # Trigger only when frontend code changes
+
+# Configure environment for secret protection
+environment:
+  name: vm-deploy
+
+jobs:
+  build-and-deploy-vm:
+    name: Build and Deploy Frontend
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts'
+          cache: 'npm'
+
+      - name: Install dependencies and Build React App
+        run: |
+          npm install
+          npm run build # Adjust if your build script is different (e.g., 'npm run start')
+          
+      - name: Deploy via SSH to GCP VM
+        uses: google-github-actions/ssh@v1
+        with:
+          # Authentication and Target VM Details
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          instance_name: ${{ secrets.GCP_VM_INSTANCE_NAME }}
+          zone: ${{ secrets.GCP_VM_ZONE }}
+          user: ${{ secrets.VM_USERNAME }}
+          
+          # SSH Commands
+          # 1. Transfer the compiled 'dist' (or 'build') folder to the Nginx root directory
+          # 2. Reload Nginx to clear cache/ensure configuration is active
+          command: |
+            echo "Transferring frontend build..."
+            # NOTE: Assumes your build command creates a directory named 'dist'
+            scp -r ./dist/* ${{ secrets.VM_USERNAME }}@${{ secrets.GCP_VM_INSTANCE_NAME }}:/var/www/frontend
+            
+            echo "Reloading Nginx..."
+            sudo systemctl reload nginx
