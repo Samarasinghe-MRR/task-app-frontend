@@ -1,15 +1,15 @@
-name: 🧩 Phase 2: Deploy React Frontend to GCP VM
+name: Deploy React Frontend to GCP VM
 
 on:
   push:
     branches:
       - main
     paths:
-      - '**.js'
-      - '**.jsx'
-      - '**.json'
-      - '**.css'
-      - '**.html'
+      - "**.js"
+      - "**.jsx"
+      - "**.json"
+      - "**.css"
+      - "**.html"
 
 jobs:
   build-and-deploy-vm:
@@ -18,39 +18,39 @@ jobs:
     environment: vm-deploy
     permissions:
       contents: read
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies and Build React App
         run: |
           npm install
           npm run build
-          
+
       - name: Archive build artifacts
         run: |
           tar -czf build.tar.gz -C dist .
-          
+
       - name: Setup SSH Agent
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          
+
       - name: Deploy to GCP VM
         run: |
           # Add VM to known hosts
           ssh-keyscan -H ${{ secrets.GCP_VM_IP }} >> ~/.ssh/known_hosts
-          
+
           # Transfer build files
           scp build.tar.gz ${{ secrets.VM_USERNAME }}@${{ secrets.GCP_VM_IP }}:/tmp/
-          
+
           # Deploy on remote server
           ssh ${{ secrets.VM_USERNAME }}@${{ secrets.GCP_VM_IP }} << 'EOF'
             # Create frontend directory if it doesn't exist
