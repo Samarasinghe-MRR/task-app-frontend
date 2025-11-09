@@ -20,7 +20,7 @@ function App() {
       const res = await getTasks();
       setTasks(res.data);
     } catch (err) {
-      setError("Failed to load tasks. Make sure the backend is running on port 8081.");
+      setError("Failed to load tasks. Please check your network connection.");
       console.error("Error loading tasks:", err);
     } finally {
       setLoading(false);
