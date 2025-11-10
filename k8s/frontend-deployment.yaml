@@ -16,6 +16,7 @@ spec:
       containers:
         - name: frontend
           image: asia-south1-docker.pkg.dev/dev-ops-475910/task-repo-rajinie/task-frontend:latest # REPLACE IMAGE_REPO
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           envFrom:

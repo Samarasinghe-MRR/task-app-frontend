@@ -131,3 +131,12 @@ jobs:
           IMAGE_PATH="${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}"
           echo "🔍 Verifying image exists in registry..."
           gcloud container images describe $IMAGE_PATH:$IMAGE_TAG --format="value(image_summary.digest)" || echo "⚠️ Image verification failed - check registry permissions"
+
+      - name: Trigger Deployment Update
+        run: |
+          echo "🔄 Triggering deployment restart to pull latest image..."
+          kubectl rollout restart deployment/frontend-deployment -n ${{ env.NAMESPACE }}
+          echo "✅ Deployment restart initiated - new pods will pull the latest image"
+          
+          echo "🔍 Monitoring rollout status..."
+          kubectl rollout status deployment/frontend-deployment -n ${{ env.NAMESPACE }} --timeout=300s
