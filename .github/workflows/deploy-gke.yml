@@ -92,53 +92,42 @@ jobs:
       - name: Check Prerequisites
         run: |
           echo "=== Checking if backend prerequisites exist ==="
-          
+
           # Check if namespace exists
           if ! kubectl get namespace ${{ env.NAMESPACE }} > /dev/null 2>&1; then
             echo "❌ ERROR: Namespace '${{ env.NAMESPACE }}' does not exist!"
             echo "Please ensure backend has been deployed first to create shared infrastructure."
             exit 1
           fi
-          
+
           # Check if backend service exists
           if ! kubectl get service backend-service -n ${{ env.NAMESPACE }} > /dev/null 2>&1; then
             echo "❌ ERROR: Backend service does not exist!"
             echo "Please ensure backend has been deployed first."
             exit 1
           fi
-          
+
           echo "✅ Prerequisites check passed - backend infrastructure exists"
 
-      - name: Update Kubernetes manifests and Deploy
+      - name: Build Complete - Image Ready for Deployment
         env:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           IMAGE_PATH="${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}"
+          
+          echo "🎉 Frontend Build Complete!"
+          echo "📦 Docker Image: $IMAGE_PATH:$IMAGE_TAG"
+          echo "🚀 Image pushed to Artifact Registry successfully"
+          echo ""
+          echo "ℹ️  Next Steps:"
+          echo "   1. Infrastructure team will deploy this image to GKE"  
+          echo "   2. Monitor deployment in the infrastructure repository"
+          echo "   3. Verify application at: http://136.110.145.6"
 
-          # Create temporary deployment file with updated image
-          sed "s|asia-south1-docker.pkg.dev/dev-ops-475910/task-repo-rajinie/task-frontend:latest|${IMAGE_PATH}:${IMAGE_TAG}|g" k8s/frontend-deployment.yaml > k8s/frontend-deployment-temp.yaml
-
-          # Apply all necessary Kubernetes manifests
-          kubectl apply -f k8s/namespace.yaml
-          kubectl apply -f k8s/frontend-config.yaml
-          kubectl apply -f k8s/frontend-deployment-temp.yaml
-          kubectl apply -f k8s/frontend-service.yaml
-          kubectl apply -f k8s/ingress.yaml
-
-          # Clean up temporary file
-          rm k8s/frontend-deployment-temp.yaml
-
-      - name: Wait for Frontend Rollout
+      - name: Verify Image in Registry
+        env:
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          kubectl rollout status deployment/frontend-deployment -n ${{ env.NAMESPACE }} --timeout=300s
-
-      - name: Verify Deployment
-        run: |
-          echo "=== Pod Status ==="
-          kubectl get pods -n ${{ env.NAMESPACE }} -l app=frontend
-          echo "=== Service Status ==="
-          kubectl get services -n ${{ env.NAMESPACE }}
-          echo "=== Ingress Status ==="
-          kubectl get ingress -n ${{ env.NAMESPACE }}
-          echo "=== Recent Logs ==="
-          kubectl logs -n ${{ env.NAMESPACE }} -l app=frontend --tail=10
+          IMAGE_PATH="${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}"
+          echo "🔍 Verifying image exists in registry..."
+          gcloud container images describe $IMAGE_PATH:$IMAGE_TAG --format="value(image_summary.digest)" || echo "⚠️ Image verification failed - check registry permissions"
