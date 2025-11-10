@@ -1,15 +1,17 @@
 name: Deploy React Frontend to GCP VM
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "**.js"
-      - "**.jsx"
-      - "**.json"
-      - "**.css"
-      - "**.html"
+  # Temporarily disabled - focusing on GKE deployment
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "**.js"
+  #     - "**.jsx"
+  #     - "**.json"
+  #     - "**.css"
+  #     - "**.html"
+  workflow_dispatch: # Manual trigger only
 
 jobs:
   build-and-deploy-vm:
