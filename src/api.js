@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-// Use relative path for API URL - Ingress will route to backend
-const API_BASE_URL = "/api/tasks";
+// Use environment variable for API host, fallback to relative path for proxy
+const apiHost = import.meta.env.VITE_API_BASE_URL || "/api";
+const API_BASE_URL = `${apiHost}/tasks`;
 
 console.log("API Base URL:", API_BASE_URL);
 

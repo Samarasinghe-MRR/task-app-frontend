@@ -19,10 +19,15 @@ FROM nginx:alpine
 # Copy build output to Nginx's default html directory
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy custom nginx configuration
+# Copy custom nginx configuration and entrypoint script
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY entrypoint.sh /entrypoint.sh
+
+# Make entrypoint script executable
+RUN chmod +x /entrypoint.sh
 
 # Expose port
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+# Use custom entrypoint to configure nginx at runtime
+ENTRYPOINT ["/entrypoint.sh"]
