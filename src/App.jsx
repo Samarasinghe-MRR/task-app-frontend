@@ -4,7 +4,7 @@ import TaskList from "./components/TaskList";
 import TaskForm from "./components/TaskForm";
 import "./App.css";
 
-// Updated: v2.5 - Fixed CI/CD workflows, build-only approach
+// Updated: v2.6 - HTTPS deployment working, testing GKE CI/CD pipeline
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -74,8 +74,8 @@ function App() {
   return (
     <div className="container">
       <header className="app-header">
-        <h1>📝 Task Manager <span style={{fontSize: '0.6em', opacity: 0.8}}>v2.5</span></h1>
-        <p>Manage your DevOps tasks efficiently - Fixed CI/CD Workflows ✅ Nov 10, 2025 15:30</p>
+        <h1>📝 Task Manager <span style={{fontSize: '0.6em', opacity: 0.8}}>v2.6</span></h1>
+        <p>Manage your DevOps tasks efficiently - HTTPS & GKE Pipeline Test 🚀 Nov 10, 2025 17:00</p>
       </header>
       
       {error && (
@@ -90,7 +90,7 @@ function App() {
       <footer className="app-footer">
         <p>📊 Total tasks: {tasks.length} | ✅ Completed: {tasks.filter(t => t.status === "Completed").length}</p>
         <p style={{fontSize: '0.8em', marginTop: '5px', color: '#28a745'}}>
-          🚀 API Paths Fixed - Deployment v2.3 - {new Date().toLocaleString()}
+          🚀 HTTPS Ready - CI/CD Pipeline Test v2.6 - {new Date().toLocaleString()}
         </p>
       </footer>
     </div>

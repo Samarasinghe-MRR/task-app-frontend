@@ -114,7 +114,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           IMAGE_PATH="${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}"
-          
+
           echo "🎉 Frontend Build Complete!"
           echo "📦 Docker Image: $IMAGE_PATH:$IMAGE_TAG"
           echo "🚀 Image pushed to Artifact Registry successfully"
