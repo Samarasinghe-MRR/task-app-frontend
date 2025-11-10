@@ -64,7 +64,21 @@ jobs:
             sudo tar -xzf build.tar.gz -C /var/www/frontend &&
             sudo chown -R www-data:www-data /var/www/frontend &&
             sudo chmod -R 755 /var/www/frontend &&
-            sudo systemctl reload nginx &&
+            echo 'Checking nginx service status...' &&
+            if ! command -v nginx &> /dev/null; then
+              echo 'Nginx not installed, installing...' &&
+              sudo apt-get update &&
+              sudo apt-get install -y nginx
+            fi &&
+            if sudo systemctl is-active --quiet nginx; then
+              echo 'Nginx is running, reloading configuration...' &&
+              sudo systemctl reload nginx
+            else
+              echo 'Nginx is not running, starting nginx...' &&
+              sudo systemctl start nginx &&
+              sudo systemctl enable nginx &&
+              echo 'Nginx started and enabled'
+            fi &&
             rm -f /tmp/build.tar.gz &&
             echo '✅ Frontend deployed successfully!'
           "
