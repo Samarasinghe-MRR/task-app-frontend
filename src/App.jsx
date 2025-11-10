@@ -4,6 +4,8 @@ import TaskList from "./components/TaskList";
 import TaskForm from "./components/TaskForm";
 import "./App.css";
 
+// Updated: v2.5 - Fixed CI/CD workflows, build-only approach
+
 function App() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,8 +74,8 @@ function App() {
   return (
     <div className="container">
       <header className="app-header">
-        <h1>📝 Task Manager <span style={{fontSize: '0.6em', opacity: 0.8}}>v2.4</span></h1>
-        <p>Manage your DevOps tasks efficiently - GKE Deployment Ready 🚀 Nov 10, 2025</p>
+        <h1>📝 Task Manager <span style={{fontSize: '0.6em', opacity: 0.8}}>v2.5</span></h1>
+        <p>Manage your DevOps tasks efficiently - Fixed CI/CD Workflows ✅ Nov 10, 2025 15:30</p>
       </header>
       
       {error && (
